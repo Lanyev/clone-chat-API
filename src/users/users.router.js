@@ -12,7 +12,7 @@ router.get("/users/:name", usersServices.getUserByName);
 
 router.post("/users", usersServices.createUser);
 
-router.put("/users/:id", usersServices.updateUser);
+router.patch("/users/:id", usersServices.updateUser);
 
 router.delete("/users/:id", usersServices.deleteUser);
 

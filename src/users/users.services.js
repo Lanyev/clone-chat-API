@@ -18,8 +18,9 @@ const getUserById = async (req, res) => {
     .then((data) => {
       if (data) {
         res.status(200).json(data);
+      } else {
+        res.status(404).json({ message: "User not found" });
       }
-      res.status(404).json({ message: "User not found" });
     })
     .catch((err) => {
       res.status(400).json({ message: "Bad request" });
@@ -70,18 +71,15 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { id } = req.params;
-  const user = req.body;
-  usersControllers
-    .updateUser(id, user)
-    .then((data) => {
-      if (data) {
-        res.status(200).json(data);
-      }
-      res.status(404).json({ message: "User not found" });
-    })
-    .catch((err) => {
-      res.status(400).json({ message: "Bad request" });
-    });
+  const updateData = req.body;
+  try {
+    const updatedUser = await usersControllers.updateUser(id, updateData);
+    res
+      .status(200)
+      .json({ message: "User updated successfully", data: updatedUser });
+  } catch (error) {
+    res.status(400).json({ message: "Bad request" });
+  }
 };
 
 const deleteUser = async (req, res) => {
