@@ -6,10 +6,6 @@ router.get("/users", usersServices.getAllUsers);
 
 router.get("/users/:id", usersServices.getUserById);
 
-router.get("/users/:email", usersServices.getUserByEmail);
-
-router.get("/users/:name", usersServices.getUserByName);
-
 router.post("/users", usersServices.createUser);
 
 router.patch("/users/:id", usersServices.updateUser);

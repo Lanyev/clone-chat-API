@@ -1,13 +1,24 @@
+const { success, error } = require("../utils/handleResponses");
 const usersControllers = require("./users.controllers");
 
 const getAllUsers = async (req, res) => {
   usersControllers
     .getAllUsers()
     .then((data) => {
-      res.status(200).json(data);
+      success({
+        res,
+        data,
+        status: 200,
+        message: "All users retrieved successfully",
+      });
     })
     .catch((err) => {
-      res.status(400).json(err);
+      error({
+        res,
+        data: err,
+        status: 400,
+        message: "Bad request",
+      });
     });
 };
 
@@ -17,43 +28,27 @@ const getUserById = async (req, res) => {
     .getUserById(id)
     .then((data) => {
       if (data) {
-        res.status(200).json(data);
+        success({
+          res,
+          data,
+          status: 200,
+          message: "User found",
+        });
       } else {
-        res.status(404).json({ message: "User not found" });
+        error({
+          res,
+          status: 404,
+          message: "User not found",
+        });
       }
     })
     .catch((err) => {
-      res.status(400).json({ message: "Bad request" });
-    });
-};
-
-const getUserByEmail = async (req, res) => {
-  const { email } = req.params;
-  usersControllers
-    .getUserByEmail(email)
-    .then((data) => {
-      if (data) {
-        res.status(200).json(data);
-      }
-      res.status(404).json({ message: "User not found" });
-    })
-    .catch((err) => {
-      res.status(400).json({ message: "Bad request" });
-    });
-};
-
-const getUserByName = async (req, res) => {
-  const { name } = req.params;
-  usersControllers
-    .getUserByName(name)
-    .then((data) => {
-      if (data) {
-        res.status(200).json(data);
-      }
-      res.status(404).json({ message: "User not found" });
-    })
-    .catch((err) => {
-      res.status(400).json({ message: "Bad request" });
+      error({
+        res,
+        data: err,
+        status: 400,
+        message: "Bad request",
+      });
     });
 };
 
@@ -62,10 +57,20 @@ const createUser = async (req, res) => {
   usersControllers
     .createUser(user)
     .then((data) => {
-      res.status(201).json(data);
+      success({
+        res,
+        data,
+        status: 201,
+        message: "User created successfully",
+      });
     })
     .catch((err) => {
-      res.status(400).json(err);
+      error({
+        res,
+        data: err,
+        status: 400,
+        message: "Bad request",
+      });
     });
 };
 
@@ -74,11 +79,19 @@ const updateUser = async (req, res) => {
   const updateData = req.body;
   try {
     const updatedUser = await usersControllers.updateUser(id, updateData);
-    res
-      .status(200)
-      .json({ message: "User updated successfully", data: updatedUser });
-  } catch (error) {
-    res.status(400).json({ message: "Bad request" });
+    success({
+      res,
+      data: updatedUser,
+      status: 200,
+      message: "User updated successfully",
+    });
+  } catch (err) {
+    error({
+      res,
+      data: err,
+      status: 400,
+      message: "Bad request",
+    });
   }
 };
 
@@ -88,21 +101,33 @@ const deleteUser = async (req, res) => {
     .deleteUser(id)
     .then((data) => {
       if (data) {
-        res.status(200).json(data);
+        success({
+          res,
+          data,
+          status: 200,
+          message: "User deleted successfully",
+        });
         return;
       }
-      res.status(404).json({ message: "User not found" });
+      error({
+        res,
+        status: 404,
+        message: "User not found",
+      });
     })
     .catch((err) => {
-      res.status(400).json({ message: "Bad request" });
+      error({
+        res,
+        data: err,
+        status: 400,
+        message: "Bad request",
+      });
     });
 };
 
 module.exports = {
   getAllUsers,
   getUserById,
-  getUserByEmail,
-  getUserByName,
   createUser,
   updateUser,
   deleteUser,
