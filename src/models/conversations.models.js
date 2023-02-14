@@ -3,19 +3,13 @@ const db = require("../database");
 
 const Conversation = db.define("conversation", {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     primaryKey: true,
-    autoIncrement: true,
   },
   profileImage: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
   name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  createdBy: {
     type: DataTypes.STRING,
     allowNull: false,
   },

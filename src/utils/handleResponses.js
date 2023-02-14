@@ -1,20 +1,21 @@
-//? Para respuestas exitosas
+//? For successful responses
 const success = ({ status, data, message, res }) => {
   res.status(status).json({
     error: false,
-    status: status,
-    message: message,
-    data: data,
+    status,
+    message,
+    data,
   });
 };
 
-//? Para respuestas de errores
+//? For error responses
 const error = ({ status, data, message, res, fields }) => {
   res.status(status).json({
     error: true,
-    status: status,
-    message: message,
-    fields: fields,
+    status,
+    message,
+    fields,
+    data,
   });
 };
 

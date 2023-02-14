@@ -3,9 +3,8 @@ const db = require("../utils/database");
 
 const Users = db.define("users", {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     primaryKey: true,
-    autoIncrement: true,
   },
   firstName: {
     type: DataTypes.STRING,
@@ -18,6 +17,7 @@ const Users = db.define("users", {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true,
   },
   password: {
     type: DataTypes.STRING,
@@ -26,14 +26,12 @@ const Users = db.define("users", {
   profileImage: {
     type: DataTypes.STRING,
   },
-  isActive: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-    defaultValue: true,
-  },
   phone: {
     type: DataTypes.STRING,
-    allowNull: false,
+  },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
   },
 });
 

@@ -1,11 +1,11 @@
-const { success, error } = require("../utils/handleResponses");
+const responses = require("../utils/handleResponses");
 const usersControllers = require("./users.controllers");
 
 const getAllUsers = async (req, res) => {
   usersControllers
     .getAllUsers()
     .then((data) => {
-      success({
+      responses.success({
         res,
         data,
         status: 200,
@@ -13,11 +13,11 @@ const getAllUsers = async (req, res) => {
       });
     })
     .catch((err) => {
-      error({
-        res,
-        data: err,
+      responses.error({
         status: 400,
+        data: err,
         message: "Bad request",
+        res,
       });
     });
 };
@@ -28,14 +28,14 @@ const getUserById = async (req, res) => {
     .getUserById(id)
     .then((data) => {
       if (data) {
-        success({
+        responses.success({
           res,
           data,
           status: 200,
           message: "User found",
         });
       } else {
-        error({
+        responses.error({
           res,
           status: 404,
           message: "User not found",
@@ -43,9 +43,8 @@ const getUserById = async (req, res) => {
       }
     })
     .catch((err) => {
-      error({
+      responses.error({
         res,
-        data: err,
         status: 400,
         message: "Bad request",
       });
@@ -54,24 +53,22 @@ const getUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
   const user = req.body;
-  usersControllers
-    .createUser(user)
-    .then((data) => {
-      success({
-        res,
-        data,
-        status: 201,
-        message: "User created successfully",
-      });
-    })
-    .catch((err) => {
-      error({
-        res,
-        data: err,
-        status: 400,
-        message: "Bad request",
-      });
+  try {
+    const data = await usersControllers.createUser(user);
+    responses.success({
+      res,
+      data,
+      status: 201,
+      message: "User created successfully",
     });
+  } catch (err) {
+    responses.error({
+      res,
+      data: err,
+      status: 400,
+      message: "Bad request",
+    });
+  }
 };
 
 const updateUser = async (req, res) => {
@@ -79,16 +76,16 @@ const updateUser = async (req, res) => {
   const updateData = req.body;
   try {
     const updatedUser = await usersControllers.updateUser(id, updateData);
-    success({
+    responses.success({
       res,
       data: updatedUser,
       status: 200,
       message: "User updated successfully",
     });
   } catch (err) {
-    error({
+    responses.error({
       res,
-      data: err,
+      error: err,
       status: 400,
       message: "Bad request",
     });
@@ -101,7 +98,7 @@ const deleteUser = async (req, res) => {
     .deleteUser(id)
     .then((data) => {
       if (data) {
-        success({
+        responses.success({
           res,
           data,
           status: 200,
@@ -109,14 +106,14 @@ const deleteUser = async (req, res) => {
         });
         return;
       }
-      error({
+      responses.error({
         res,
         status: 404,
         message: "User not found",
       });
     })
     .catch((err) => {
-      error({
+      responses.error({
         res,
         data: err,
         status: 400,

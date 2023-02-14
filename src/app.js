@@ -7,7 +7,7 @@ const responseHandlers = require("./utils/handleResponses");
 
 app.use(express.json());
 
-app.use("/api/v1", usersRouter);
+app.use("/api/v1/users", usersRouter);
 
 db.authenticate()
   .then(() => {

@@ -1,47 +1,23 @@
-const { Sequelize } = require("sequelize");
-const db = new Sequelize("database", "username", "password", {
-  host: "localhost",
-  dialect: "postgres",
-});
+//? This code is used to initialize the models
+//? and establish the relationships between them.
 
-const Conversations = require("./conversations.models")(db, Sequelize);
-const Messages = require("./messages.models")(db, Sequelize);
-const Participants = require("./participants.models")(db, Sequelize);
-const Users = require("./users.models")(db, Sequelize);
+const Conversations = require("./conversations.models");
+const Messages = require("./messages.models");
+const Participants = require("./participants.models");
+const Users = require("./users.models");
 
-// create the associations between the models
-Conversations.hasMany(Messages, {
-  foreignKey: "conversationId",
-  as: "messages",
-});
-Messages.belongsTo(Conversations, {
-  foreignKey: "conversationId",
-  as: "conversation",
-});
+const initModels = () => {
+  //? Users => Participants
+  Users.hasMany(Participants);
+  Participants.belongsTo(Users);
 
-Conversations.hasMany(Participants, {
-  foreignKey: "conversationId",
-  as: "participants",
-});
-Participants.belongsTo(Conversations, {
-  foreignKey: "conversationId",
-  as: "conversation",
-});
+  //? Conversations => Participants
+  Conversations.hasMany(Participants);
+  Participants.belongsTo(Conversations);
 
-Users.hasMany(Participants, {
-  foreignKey: "userId",
-  as: "participants",
-});
-Participants.belongsTo(Users, {
-  foreignKey: "userId",
-  as: "user",
-});
-
-// export the models
-
-module.exports = {
-  Conversations,
-  Messages,
-  Participants,
-  Users,
+  //? Participants => Messages
+  Participants.hasMany(Messages);
+  Messages.belongsTo(Participants);
 };
+
+module.exports = initModels;
