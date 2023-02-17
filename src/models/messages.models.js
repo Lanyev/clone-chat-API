@@ -1,36 +1,30 @@
-// Import the Sequelize constructor from the library
-const Sequelize = require("sequelize");
+const { DataTypes } = require("sequelize");
 
-// Import the database connection from config.js
-const sequelize = require("../config/config.js");
+const db = require("../config/database");
 
-// Initialize Message model (table) by passing the connection instance
-const Message = sequelize.define("message", {
-  // Sequelize will automatically set the id as a primary key
-  // and make it auto increment
+const Participants = require("./participants.models");
+
+const Message = db.define("messages", {
   id: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
+    type: DataTypes.UUID,
     primaryKey: true,
-    autoIncrement: true,
   },
-  name: {
-    type: Sequelize.STRING,
+  content: {
+    type: DataTypes.TEXT,
     allowNull: false,
   },
-  email: {
-    type: Sequelize.STRING,
+  participantId: {
+    type: DataTypes.UUID,
     allowNull: false,
-    unique: true,
-  },
-  password: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      len: [8],
+    references: {
+      model: Participants,
+      key: "id",
     },
+  },
+  status: {
+    type: DataTypes.STRING,
+    defaultValue: "Sent",
   },
 });
 
-// Export the model
 module.exports = Message;

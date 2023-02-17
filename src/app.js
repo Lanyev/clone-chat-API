@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const db = require("./utils/database");
 const usersRouter = require("./users/users.router");
+const authRouter = require("./auth/auth.router");
 
 const responseHandlers = require("./utils/handleResponses");
 
