@@ -1,36 +1,32 @@
-// Importamos las dependencias necesarias
-const { ExtractJwt, Strategy } = require("passport-jwt");
-const passport = require("passport");
+//? Importamos de passport-jwt las 2 cositas de aqui abajo
+const { ExtractJwt, Strategy } = require('passport-jwt')
+//? Importamos de passport el core completo
+const passport = require('passport')
 
-// Importamos el controlador que se encarga de buscar un usuario por su id
-const { findUserById } = require("../users/users.controllers");
-
-// Configuramos el objeto que contendrá los datos necesarios para autenticar un usuario
+//? Importamos nuestro controlador que nos va a permitir validar si el usuario existe en mi db
+const { findUserById } = require('../users/users.controllers')
+ 
+//? Generamos configuraciones basicas para manejar passport con jwt
 const passportConfigs = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: "academlo",
-};
+    //? Esta configuracion lo que hace es extraer el Bearer Token de mi peticion
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), //? 
+    secretOrKey: 'academlo'
+}
 
-// Creamos una nueva estrategia de autenticación con Passport, utilizando el objeto de configuración anterior
-passport.use(
-  new Strategy(passportConfigs, (tokenDecoded, done) => {
-    // Buscamos al usuario por su id, utilizando el controlador importado
+
+//? done()
+passport.use(new Strategy(passportConfigs, (tokenDecoded, done) => {
     findUserById(tokenDecoded.id)
-      .then((data) => {
-        // Si encontramos al usuario, lo pasamos al callback done() junto con el token decodificado
-        if (data) {
-          done(null, tokenDecoded);
-        } else {
-          // Si no encontramos al usuario, pasamos false al callback done()
-          done(null, false);
-        }
-      })
-      .catch((err) => {
-        // Si ocurre un error durante la búsqueda del usuario, lo pasamos al callback done()
-        done(err, false);
-      });
-  })
-);
+        .then(data => {
+            if(data){
+               done(null, tokenDecoded) //? El usuario si Existe y es valido
+            } else {
+               done(null, false, {message: 'Token Incorrect'}) //? El usuario no existe
+            }
+        })
+        .catch(err => {
+            done(err, false) //? Error en la base de datos
+        })
+}))
 
-// Exportamos el objeto passport, que contiene las funciones necesarias para autenticar usuarios
-module.exports = passport;
+module.exports = passport.authenticate('jwt', {session: false})

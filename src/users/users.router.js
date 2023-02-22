@@ -1,15 +1,19 @@
-const usersServices = require("./users.services");
-
 const router = require("express").Router();
 
-router.get("/", usersServices.getAllUsers);
+const userServices = require("./users.services");
+const passportJwt = require("../middlewares/auth.middleware");
 
-router.get("/:id", usersServices.getUserById);
+router.get("/", userServices.getAllUsers);
+router.post("/", userServices.postNewUser);
 
-router.post("/", usersServices.createUser);
+router.get("/me", passportJwt, userServices.getMyUser);
+router.patch("/me", passportJwt, userServices.patchMyUser);
+router.delete("/me", passportJwt, userServices.deleteMyUser);
 
-router.patch("/:id", usersServices.updateUser);
+//? /api/v1/users/me
 
-router.delete("/:id", usersServices.deleteUser);
+router.get("/:id", userServices.getUserById);
+router.patch("/:id", userServices.patchUser);
+router.delete("/:id", userServices.deleteUser);
 
 module.exports = router;

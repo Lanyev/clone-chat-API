@@ -1,30 +1,29 @@
 const { DataTypes } = require("sequelize");
 
-const db = require("../config/database");
-
+const db = require("../utils/database");
 const Participants = require("./participants.models");
 
-const Message = db.define("messages", {
+const Messages = db.define("messages", {
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
   },
   content: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: false
   },
   participantId: {
     type: DataTypes.UUID,
-    allowNull: false,
+    allowNull:false,
     references: {
-      model: Participants,
-      key: "id",
-    },
+        model: Participants,
+        key: 'id'
+    }
   },
   status: {
     type: DataTypes.STRING,
-    defaultValue: "Sent",
-  },
+    defaultValue: 'Sent'
+  }
 });
 
-module.exports = Message;
+module.exports = Messages

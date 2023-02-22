@@ -22,18 +22,18 @@ const Users = db.define("users", {
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
-  profileImage: {
-    type: DataTypes.STRING,
+  profileImage:{
+    type: DataTypes.STRING
   },
   phone: {
     type: DataTypes.STRING,
   },
   isActive: {
     type: DataTypes.BOOLEAN,
-    defaultValue: true,
-  },
+    defaultValue: true
+  }
 });
 
-module.exports = Users;
+module.exports = Users

@@ -1,22 +1,23 @@
-const responses = require("../utils/handleResponses");
 const usersControllers = require("./users.controllers");
+const responses = require("../utils/handleResponses");
+const { hashPassword } = require("../utils/crypto");
 
-const getAllUsers = async (req, res) => {
+const getAllUsers = (req, res) => {
   usersControllers
-    .getAllUsers()
+    .findAllUser()
     .then((data) => {
       responses.success({
-        res,
-        data,
         status: 200,
-        message: "All users retrieved successfully",
+        data: data,
+        message: "Getting all Users",
+        res,
       });
     })
     .catch((err) => {
       responses.error({
         status: 400,
         data: err,
-        message: "Bad request",
+        message: "Something bad getting all users",
         res,
       });
     });
@@ -52,36 +53,7 @@ const getUserById = (req, res) => {
     });
 };
 
-// const findUserByEmail = async (req, res) => {
-//   const { email } = req.params;
-//   usersControllers
-//     .findUserByEmail(email)
-//     .then((data) => {
-//       if (data) {
-//         responses.success({
-//           res,
-//           data,
-//           status: 200,
-//           message: "User found",
-//         });
-//       } else {
-//         responses.error({
-//           res,
-//           status: 404,
-//           message: "User not found",
-//         });
-//       }
-//     })
-//     .catch((err) => {
-//       responses.error({
-//         res,
-//         status: 400,
-//         message: "Bad request",
-//       });
-//     });
-// };
-
-const createUser = async (req, res) => {
+const postNewUser = (req, res) => {
   const userObj = req.body;
   usersControllers
     .createNewUser(userObj)
@@ -111,7 +83,7 @@ const createUser = async (req, res) => {
     });
 };
 
-const updateUser = (req, res) => {
+const patchUser = (req, res) => {
   const id = req.params.id;
   const userObj = req.body;
 
@@ -191,11 +163,92 @@ const deleteUser = (req, res) => {
     });
 };
 
+//? los servicios para acciones sobre mi propio usuario:
+
+const getMyUser = (req, res) => {
+  const id = req.user.id;
+
+  usersControllers
+    .findUserById(id)
+    .then((data) => {
+      responses.success({
+        res,
+        status: 200,
+        message: "This is your current user",
+        data,
+      });
+    })
+    .catch((err) => {
+      responses.error({
+        res,
+        status: 400,
+        message: "Something bad getting the current user",
+        data: err,
+      });
+    });
+};
+
+const deleteMyUser = (req, res) => {
+  const id = req.user.id;
+
+  usersControllers
+    .deleteUser(id)
+    .then((data) => {
+      responses.success({
+        res,
+        status: 200,
+        message: `User deleted successfully with id: ${id}`,
+      });
+    })
+    .catch((err) => {
+      responses.error({
+        res,
+        status: 400,
+        message: "Something bad trying to delete this user",
+      });
+    });
+};
+
+const patchMyUser = (req, res) => {
+  const id = req.user.id;
+  const { firstName, lastName, email, password, profileImage, phone } =
+    req.body;
+  const userObj = {
+    firstName,
+    lastName,
+    email,
+    password: hashPassword(password),
+    profileImage,
+    phone,
+  };
+
+  usersControllers
+    .updateUser(id, userObj)
+    .then(() => {
+      responses.success({
+        res,
+        status: 200,
+        message: `Your user has been updated successfully`,
+        data,
+      });
+    })
+    .catch((err) => {
+      responses.error({
+        res,
+        status: 400,
+        message: "Something went wrong.",
+        data: err,
+      });
+    });
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
-  // findUserByEmail,
-  createUser,
-  updateUser,
+  postNewUser,
+  patchUser,
   deleteUser,
+  getMyUser,
+  deleteMyUser,
+  patchMyUser,
 };

@@ -1,22 +1,32 @@
-const DataTypes = require("sequelize");
-const db = require("../database");
+const { DataTypes } = require("sequelize");
 
-const Conversation = db.define("conversation", {
+const db = require("../utils/database");
+//const Users = require("./users.models");
+
+const Conversations = db.define("conversations", {
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
-  },
-  profileImage: {
-    type: DataTypes.STRING,
   },
   name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  profileImage:{
+    type: DataTypes.STRING
+  },
+  // createdBy: {
+  //   type: DataTypes.UUID,
+  //   allowNull: false,
+  //   references: {
+  //       model: Users,
+  //       key: 'id'
+  //   }
+  // },
   isGroup: {
     type: DataTypes.BOOLEAN,
-    allowNull: false,
-  },
+    defaultValue: false
+  }
 });
 
-module.exports = Conversation;
+module.exports = Conversations
