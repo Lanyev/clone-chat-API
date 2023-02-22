@@ -10,8 +10,9 @@ router
   .get(passportJWT, conversationServices.getConversationsByUser)
   .post(passportJWT, conversationServices.postNewConversation);
 
-// router.route("/:id").get().post().delete();
-
 router
   .route("/:conversation_id/messages")
-  .get(passportJwt, messageServices.getAllMessagesByConversation);
+  .get(passportJWT, messageServices.getAllMessagesByConversation)
+  .post(passportJWT, conversationServices.postNewMessage);
+
+module.exports = router;

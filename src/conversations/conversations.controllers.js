@@ -1,7 +1,7 @@
-const Conversations = require("./models/conversations.model");
-const Participants = require("../models/participants.model");
-const Users = require("../models/users.model");
-const Messages = require("../models/messages.model");
+const Conversations = require("../models/conversations.models");
+const Participants = require("../models/participants.models");
+const Users = require("../models/users.models");
+const Messages = require("../models/messages.models");
 const uuid = require("uuid");
 
 const findAllConversations = async (userId) => {

@@ -1,5 +1,6 @@
 const conversationControllers = require("./conversations.controllers");
 const responses = require("../utils/handleResponses");
+const createMessage = require("../messages/messages.controllers");
 
 const getConversationsByUser = (req, res) => {
   const userId = req.user.id;
@@ -64,7 +65,42 @@ const postNewConversation = (req, res) => {
     });
 };
 
+const postNewMessage = async (req, res) => {
+  const conversationId = req.params.conversation_id;
+  const participantId = req.user.id;
+  const text = req.body.text;
+
+  try {
+    const message = await createMessage(conversationId, participantId, text);
+    if (newMessage) {
+      responses.success({
+        status: 201,
+        data: message,
+        message: "Message created successfully",
+        res,
+      });
+    } else {
+      responses.error({
+        status: 400,
+        message: `Conversation with ID: ${conversationId}, not found`,
+        res,
+      });
+    }
+  } catch (err) {
+    responses.error({
+      res,
+      status: 400,
+      message: err.message || "Something went bad creating the message",
+      data: err,
+      fields: {
+        text: "String",
+      },
+    });
+  }
+};
+
 module.exports = {
   getConversationsByUser,
   postNewConversation,
+  postNewMessage,
 };
